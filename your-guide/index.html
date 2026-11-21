@@ -76,8 +76,6 @@ function el(tag, cls, text){var e=document.createElement(tag); if(cls) e.classNa
 var f = el("article","feat");
 if (g && star.key === g) f.appendChild(el("span","tag","From the Reel you just watched"));
 var cv = el("a","cov"); cv.href = star.pdf; var im = el("img"); im.src = star.img; im.alt = star.title; cv.appendChild(im); f.appendChild(cv);
-f.appendChild(el("h2","",star.title));
-f.appendChild(el("p","",star.feat));
 var a = el("a","btn","Open your guide"); a.href = star.pdf; f.appendChild(a);
 f.appendChild(el("p","fine",star.fine));
 document.getElementById("featured").appendChild(f);
