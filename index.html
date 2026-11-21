@@ -15,8 +15,8 @@ body{background:#DCD5FA;color:#1E2559;font-family:'Patrick Hand',cursive;font-si
   padding:22px max(20px,env(safe-area-inset-right)) 40px max(20px,env(safe-area-inset-left))}
 main{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:16px;position:relative}
 .brand{text-align:center;font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;letter-spacing:.06em}
-.d{position:absolute;right:-4px;top:28px;width:128px;transform:rotate(-5deg)}
-.k{font-size:24px;transform:rotate(-1.5deg);transform-origin:left;margin-top:56px}
+.d{position:absolute;right:-4px;top:22px;width:108px;transform:rotate(-5deg)}
+.k{font-size:24px;transform:rotate(-1.5deg);transform-origin:left;margin-top:92px}
 h1{font-weight:400;font-size:40px;line-height:.98}
 .m{background-image:linear-gradient(#B9A7F5,#B9A7F5);background-repeat:no-repeat;background-size:100% 36%;background-position:0 86%;padding:0 4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .sub{font-size:22px}
@@ -45,7 +45,7 @@ button:disabled{opacity:.6}
     <p class="err" id="err" role="alert"></p>
   </form>
   <img class="cov" id="cover" src="your-guide/img/bedtime.jpg" alt="">
-  <p class="fine">Free. We'll email you the guide, then one short email a week. Unsubscribe in one click.</p>
+  <p class="fine" id="fine">Free. We'll email you the guide, then one short email a week. Unsubscribe in one click.</p>
 </main>
 <script>
 var GUIDES = {
@@ -62,6 +62,7 @@ document.getElementById("sub").textContent = G.sub;
 var cv = document.getElementById("cover"); if (G.cover) cv.src = G.cover; else cv.style.display = "none";
 if (G.kick) document.querySelector(".k").textContent = G.kick;
 if (G.btn) document.getElementById("go").textContent = G.btn;
+if (key === "all") document.getElementById("fine").textContent = "Free. We'll email you the guides, then one short email a week. Unsubscribe in one click.";
 document.getElementById("draw").src = G.draw;
 document.getElementById("f").addEventListener("submit", function (e) {
   e.preventDefault();
