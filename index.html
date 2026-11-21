@@ -1,7 +1,86 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kipworth · Free bedtime guide</title>
-<meta http-equiv="refresh" content="0; url=https://manage.kmail-lists.com/subscriptions/subscribe?a=RZN8wH&amp;g=VVyQXF">
-</head><body style="font-family:sans-serif;background:#0f1a2e;color:#fff;text-align:center;padding:40px 16px">
-<p>Opening your free bedtime guide…</p><p><a style="color:#ffd27a" href="https://manage.kmail-lists.com/subscriptions/subscribe?a=RZN8wH&amp;g=VVyQXF">Tap here if it doesn't open</a></p>
-</body></html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kipworth · Free guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Oswald:wght@600&display=swap" rel="stylesheet">
+<style>
+/* 21/11 : la page qui demande le mail, dans la DA du carrousel v10 (qlf). ?g=2am ou ?g=bedtime choisit le guide (défaut : bedtime).
+   L'inscription part dans la liste Klaviyo actuelle (VVyQXF) avec la propriété kip_guide ; en cas d'erreur, on renvoie au formulaire Klaviyo d'avant. */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#DCD5FA;color:#1E2559;font-family:'Patrick Hand',cursive;font-size:20px;line-height:1.25;
+  padding:22px max(20px,env(safe-area-inset-right)) 40px max(20px,env(safe-area-inset-left))}
+main{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:16px;position:relative}
+.brand{text-align:center;font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;letter-spacing:.06em}
+.d{position:absolute;right:-4px;top:28px;width:128px;transform:rotate(-5deg)}
+.k{font-size:24px;transform:rotate(-1.5deg);transform-origin:left;margin-top:64px}
+h1{font-weight:400;font-size:44px;line-height:.98}
+.m{background-image:linear-gradient(#B9A7F5,#B9A7F5);background-repeat:no-repeat;background-size:100% 36%;background-position:0 86%;padding:0 4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.sub{font-size:22px}
+.cov{align-self:center;width:62%;transform:rotate(-2deg);border-radius:6px;box-shadow:0 10px 26px rgba(30,37,89,.22);display:block}
+form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+label{font-size:20px}
+input{font-family:inherit;font-size:22px;color:#1E2559;background:#FFFFFF;border:3px solid #1E2559;border-radius:12px;padding:10px 14px;width:100%}
+input:focus{outline:3px solid #B9A7F5;outline-offset:2px}
+button{font-family:inherit;font-size:26px;color:#FFFFFF;background:#1E2559;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;transform:rotate(-.6deg)}
+button:disabled{opacity:.6}
+.err{font-size:18px;color:#B3261E;min-height:22px}
+.fine{font-size:17px;opacity:.78;text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">KIPWORTH</div>
+  <img class="d" id="draw" src="your-guide/img/house.png" alt="">
+  <div class="k">Free guide</div>
+  <h1 id="title">Why Nobody's Asleep Yet</h1>
+  <p class="sub" id="sub">Four bedtime battles, why each one happens, and one thing to try tonight for each.</p>
+  <img class="cov" id="cover" src="your-guide/img/bedtime.jpg" alt="">
+  <form id="f" novalidate>
+    <label for="email">Where shall we send it?</label>
+    <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required>
+    <button id="go" type="submit">Send me the guide</button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+  <p class="fine">Free. We'll email you the guide, then one short email a week. Unsubscribe in one click.</p>
+</main>
+<script>
+var GUIDES = {
+  "2am": {title:"Why He Comes and Finds You <span class=\"m\">in the Night</span>", sub:"Five things that worked for real UK parents, and what they told their kid.", cover:"your-guide/img/2am-cover.jpg", draw:"your-guide/img/kmoon.png"},
+  "bedtime": {title:"Why Nobody's Asleep <span class=\"m\">Yet</span>", sub:"Four bedtime battles, why each one happens, and one thing to try tonight for each.", cover:"your-guide/img/bedtime.jpg", draw:"your-guide/img/house.png"}
+};
+var FALLBACK = "https://manage.kmail-lists.com/subscriptions/subscribe?a=RZN8wH&g=VVyQXF";
+var key = new URLSearchParams(location.search).get("g");
+if (!GUIDES[key]) key = "bedtime";
+var G = GUIDES[key];
+document.getElementById("title").innerHTML = G.title;
+document.getElementById("sub").textContent = G.sub;
+document.getElementById("cover").src = G.cover;
+document.getElementById("draw").src = G.draw;
+document.getElementById("f").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var email = document.getElementById("email").value.trim(), err = document.getElementById("err"), go = document.getElementById("go");
+  err.textContent = "";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = "That email doesn't look right. Have another go?"; return; }
+  go.disabled = true; go.textContent = "Sending…";
+  var body = {data:{type:"subscription",attributes:{profile:{data:{type:"profile",attributes:{email:email,properties:{kip_guide:key,kip_source:"guide.kipworth.co.uk"},subscriptions:{email:{marketing:{consent:"SUBSCRIBED"}}}}}}},relationships:{list:{data:{type:"list",id:"VVyQXF"}}}}};
+  fetch("https://a.klaviyo.com/client/subscriptions?company_id=RZN8wH", {method:"POST", headers:{"revision":"2025-10-15","Content-Type":"application/vnd.api+json","Accept":"application/vnd.api+json"}, body:JSON.stringify(body)})
+    .then(function (r) {
+      if (r.status === 202 || r.status === 200 || r.status === 201) { location.href = "/your-guide/?g=" + key; return; }
+      if (r.status === 400) {
+        return r.json().then(function (j) {
+          var bad = JSON.stringify(j).indexOf("/attributes/email") > -1;
+          if (!bad) { location.href = FALLBACK; return; }
+          err.textContent = "That email doesn't look right. Have another go?"; go.disabled = false; go.textContent = "Send me the guide";
+        }).catch(function () { location.href = FALLBACK; });
+      }
+      location.href = FALLBACK;
+    })
+    .catch(function () { location.href = FALLBACK; });
+});
+</script>
+</body>
+</html>
