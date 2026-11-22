@@ -44,12 +44,12 @@ button:disabled{opacity:.6}
   <p class="sub" id="sub">What worked for real UK parents, at bedtime and in the middle of the night.</p>
   <form id="f" novalidate>
     <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="your@email.com">
-    <label class="tick" for="weekly"><input id="weekly" type="checkbox"><span>Email me the guide too, then one short email a week. Unsubscribe in one click.</span></label>
+    <label class="tick" for="weekly"><input id="weekly" type="checkbox"><span>Send me the guide, then one short email a week. Unsubscribe in one click.</span></label>
     <button id="go" type="submit">Get the guide</button>
     <p class="err" id="err" role="alert"></p>
   </form>
   <img class="cov" id="cover" src="your-guide/img/bedtime.jpg" alt="">
-  <p class="fine" id="fine">Free. You'll see your guide straight away.</p>
+  <p class="fine" id="fine">Free. Your guide opens straight away, and it lands in your inbox too.</p>
   <p class="priv"><a href="/privacy/">Privacy: how we use your email</a></p>
 </main>
 <script>
@@ -68,7 +68,7 @@ document.getElementById("sub").textContent = G.sub;
 var cv = document.getElementById("cover"); if (G.cover) cv.src = G.cover; else cv.style.display = "none";
 if (G.kick) document.querySelector(".k").textContent = G.kick;
 if (G.btn) document.getElementById("go").textContent = G.btn;
-if (key === "all") document.getElementById("fine").textContent = "Free. You'll see the guides straight away.";
+if (key === "all") document.getElementById("fine").textContent = "Free. Your guides open straight away, and they land in your inbox too.";
 var wk = document.getElementById("weekly"), em = document.getElementById("email");
 wk.addEventListener("change", function () { document.getElementById("err").textContent = ""; if (wk.checked && !em.value.trim()) em.focus(); });
 document.getElementById("draw").src = G.draw;
@@ -76,9 +76,9 @@ document.getElementById("f").addEventListener("submit", function (e) {
   e.preventDefault();
   var email = document.getElementById("email").value.trim(), err = document.getElementById("err"), go = document.getElementById("go");
   err.textContent = "";
-  if (!wk.checked && email) { err.textContent = "Tick the box and we'll email it to you too."; return; }
-  if (!wk.checked) { location.href = G.next || ("/your-guide/?g=" + key); return; }
+  if (!email) { err.textContent = "Pop your email in and we'll send it over."; em.focus(); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = "That email doesn't look right. Have another go?"; return; }
+  if (!wk.checked) { err.textContent = "Tick the box to get your guide."; return; }
   go.disabled = true; go.textContent = "Sending…";
   var body = {data:{type:"subscription",attributes:{profile:{data:{type:"profile",attributes:{email:email,properties:{kip_guide:key,kip_source:"guide.kipworth.co.uk",kip_weekly:true},subscriptions:{email:{marketing:{consent:"SUBSCRIBED"}}}}}}},relationships:{list:{data:{type:"list",id:"VVyQXF"}}}}};
   fetch("https://a.klaviyo.com/client/subscriptions?company_id=RZN8wH", {method:"POST", headers:{"revision":"2025-10-15","Content-Type":"application/vnd.api+json","Accept":"application/vnd.api+json"}, body:JSON.stringify(body)})
