@@ -65,7 +65,7 @@ button:disabled{opacity:.6}
 </main>
 <script>
 var GUIDES = {
-  "all": {kick:"Free guides", title:"Tips for your child who <span class=\"m\">won't sleep</span>", sub:"What worked for real UK parents, at bedtime and in the middle of the night.", cover:"", draw:"your-guide/img/house.png", btn:"Get the guides", next:"/your-guide/"},
+  "all": {kick:"Free guide", title:"Tips for your child who <span class=\"m\">won't sleep</span>", sub:"What worked for real UK parents, at bedtime and in the middle of the night.", cover:"", draw:"your-guide/img/house.png", btn:"Get the guide", next:"/your-guide/"},
   "lastorders": {title:"What Nan <span class=\"m\">Whispered</span>", sub:"Her whole sentence, and what real UK parents did at bedtime.", cover:"your-guide/img/lastorders-cover.jpg", draw:"your-guide/img/kprize.png"},
   "2am": {title:"Why He Comes and Finds You <span class=\"m\">in the Night</span>", sub:"Five things that worked for real UK parents, and what they told their kid.", cover:"your-guide/img/2am-cover.jpg", draw:"your-guide/img/kmoon.png"},
   "bedtime": {title:"Why Nobody's Asleep <span class=\"m\">Yet</span>", sub:"Four bedtime battles, why each one happens, and one thing to try tonight for each.", cover:"your-guide/img/bedtime.jpg", draw:"your-guide/img/house.png"}
@@ -73,13 +73,13 @@ var GUIDES = {
 var FALLBACK = "https://manage.kmail-lists.com/subscriptions/subscribe?a=RZN8wH&g=VVyQXF";
 var key = new URLSearchParams(location.search).get("g");
 if (!GUIDES[key]) key = "all";
-var G = GUIDES[key];
+var G = GUIDES["all"];
 document.getElementById("title").innerHTML = G.title;
 document.getElementById("sub").textContent = G.sub;
 var cv = document.getElementById("cover"); if (G.cover) cv.src = G.cover; else cv.style.display = "none";
 if (G.kick) document.querySelector(".k").textContent = G.kick;
 if (G.btn) document.getElementById("go").textContent = G.btn;
-if (key === "all") document.getElementById("fine").textContent = "Free. We'll email them to you in a few minutes.";
+document.getElementById("fine").textContent = "Free. We'll email it to you in a few minutes.";
 var wk = document.getElementById("weekly"), em = document.getElementById("email");
 wk.addEventListener("change", function () { document.getElementById("err").textContent = ""; if (wk.checked && !em.value.trim()) em.focus(); });
 document.getElementById("draw").src = G.draw;
@@ -94,7 +94,7 @@ document.getElementById("f").addEventListener("submit", function (e) {
   var body = {data:{type:"subscription",attributes:{profile:{data:{type:"profile",attributes:{email:email,properties:{kip_guide:key,kip_source:"guide.kipworth.co.uk",kip_weekly:true},subscriptions:{email:{marketing:{consent:"SUBSCRIBED"}}}}}}},relationships:{list:{data:{type:"list",id:"VVyQXF"}}}}};
   fetch("https://a.klaviyo.com/client/subscriptions?company_id=RZN8wH", {method:"POST", headers:{"revision":"2025-10-15","Content-Type":"application/vnd.api+json","Accept":"application/vnd.api+json"}, body:JSON.stringify(body)})
     .then(function (r) {
-      if (r.status === 202 || r.status === 200 || r.status === 201) { document.getElementById("sentto").textContent = email; var SUBJ = {"lastorders": "What Nan whispered", "2am": "Your 2am guide is here"}; document.getElementById("subj").textContent = SUBJ[key] || "Your bedtime guide's here"; Array.prototype.forEach.call(document.querySelectorAll("main > :not(.brand):not(#draw):not(#done)"), function (n) { n.style.display = "none"; }); var d = document.getElementById("done"); d.style.display = "flex"; d.querySelector(".k").style.marginTop = "92px"; window.scrollTo(0, 0); return; }
+      if (r.status === 202 || r.status === 200 || r.status === 201) { document.getElementById("sentto").textContent = email; var SUBJ = {}; document.getElementById("subj").textContent = SUBJ[key] || "Your bedtime guide's here"; Array.prototype.forEach.call(document.querySelectorAll("main > :not(.brand):not(#draw):not(#done)"), function (n) { n.style.display = "none"; }); var d = document.getElementById("done"); d.style.display = "flex"; d.querySelector(".k").style.marginTop = "92px"; window.scrollTo(0, 0); return; }
       if (r.status === 400) {
         return r.json().then(function (j) {
           var bad = JSON.stringify(j).indexOf("/attributes/email") > -1;
