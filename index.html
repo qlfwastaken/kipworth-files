@@ -29,6 +29,9 @@ input:focus{outline:3px solid #B9A7F5;outline-offset:2px}
 .tick input{width:30px;height:30px;padding:0;margin-top:2px;border:3px solid #1E2559;box-shadow:none;accent-color:#1E2559}
 .priv{font-size:17px;text-align:center;opacity:.78}
 .priv a{color:#1E2559}
+.done{display:none;flex-direction:column;gap:16px}
+.done .tip{background:#FFFFFF;border-radius:14px;padding:14px 16px;font-size:21px;box-shadow:0 0 0 4px #B9A7F5}
+.done .mail{font-family:inherit;word-break:break-all}
 button{font-family:inherit;font-size:26px;color:#FFFFFF;background:#1E2559;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;transform:rotate(-.6deg)}
 button:disabled{opacity:.6}
 .err{font-size:18px;color:#B3261E;min-height:22px}
@@ -49,8 +52,16 @@ button:disabled{opacity:.6}
     <p class="err" id="err" role="alert"></p>
   </form>
   <img class="cov" id="cover" src="your-guide/img/bedtime.jpg" alt="">
-  <p class="fine" id="fine">Free. Your guide opens straight away, and it lands in your inbox too.</p>
+  <p class="fine" id="fine">Free. We'll email it to you in a few minutes.</p>
   <p class="priv"><a href="/privacy/">Privacy: how we use your email</a></p>
+  <section class="done" id="done">
+    <div class="k">You're in.</div>
+    <h1>Check your <span class="m">inbox</span></h1>
+    <p class="sub">Your guide is on its way to <b class="mail" id="sentto"></b>. Give it 2 to 5 minutes.</p>
+    <p class="sub">It's from Kipworth, subject: <b id="subj">Your bedtime guide's here</b></p>
+    <p class="tip">Not there? Have a look in Promotions or Spam, then drag it into your main inbox so the next ones find you.</p>
+    <p class="fine">Still nothing after 10 minutes? Message us on Instagram, @kipworth.sleep.</p>
+  </section>
 </main>
 <script>
 var GUIDES = {
@@ -68,7 +79,7 @@ document.getElementById("sub").textContent = G.sub;
 var cv = document.getElementById("cover"); if (G.cover) cv.src = G.cover; else cv.style.display = "none";
 if (G.kick) document.querySelector(".k").textContent = G.kick;
 if (G.btn) document.getElementById("go").textContent = G.btn;
-if (key === "all") document.getElementById("fine").textContent = "Free. Your guides open straight away, and they land in your inbox too.";
+if (key === "all") document.getElementById("fine").textContent = "Free. We'll email them to you in a few minutes.";
 var wk = document.getElementById("weekly"), em = document.getElementById("email");
 wk.addEventListener("change", function () { document.getElementById("err").textContent = ""; if (wk.checked && !em.value.trim()) em.focus(); });
 document.getElementById("draw").src = G.draw;
@@ -83,7 +94,7 @@ document.getElementById("f").addEventListener("submit", function (e) {
   var body = {data:{type:"subscription",attributes:{profile:{data:{type:"profile",attributes:{email:email,properties:{kip_guide:key,kip_source:"guide.kipworth.co.uk",kip_weekly:true},subscriptions:{email:{marketing:{consent:"SUBSCRIBED"}}}}}}},relationships:{list:{data:{type:"list",id:"VVyQXF"}}}}};
   fetch("https://a.klaviyo.com/client/subscriptions?company_id=RZN8wH", {method:"POST", headers:{"revision":"2025-10-15","Content-Type":"application/vnd.api+json","Accept":"application/vnd.api+json"}, body:JSON.stringify(body)})
     .then(function (r) {
-      if (r.status === 202 || r.status === 200 || r.status === 201) { location.href = G.next || ("/your-guide/?g=" + key); return; }
+      if (r.status === 202 || r.status === 200 || r.status === 201) { document.getElementById("sentto").textContent = email; var SUBJ = {"lastorders": "What Nan whispered", "2am": "Your 2am guide is here"}; document.getElementById("subj").textContent = SUBJ[key] || "Your bedtime guide's here"; Array.prototype.forEach.call(document.querySelectorAll("main > :not(.brand):not(#draw):not(#done)"), function (n) { n.style.display = "none"; }); var d = document.getElementById("done"); d.style.display = "flex"; d.querySelector(".k").style.marginTop = "92px"; window.scrollTo(0, 0); return; }
       if (r.status === 400) {
         return r.json().then(function (j) {
           var bad = JSON.stringify(j).indexOf("/attributes/email") > -1;
